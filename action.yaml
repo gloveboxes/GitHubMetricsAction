@@ -1,0 +1,23 @@
+name: "GitHub Metrics Report"
+description: "Posts GitHub metrics to an Endpoint for tracking metrics over time"
+branding:
+
+inputs:
+  github_personal_access_token:
+    description: "Provide GitHub Personal Access Token"
+    required: true
+  github_repo:
+    description: "GitHub owner/repo name"
+    required: true
+  reporting_endpoint:
+    description: "Azure Function App Reporting Endpoint"
+    required: true
+  reporting_group:
+    description: "Reporting group or team"
+    required: true
+  
+outputs:
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
