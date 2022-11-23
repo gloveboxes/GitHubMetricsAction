@@ -8,4 +8,4 @@ COPY entrypoint.sh /entrypoint.sh
 
 RUN chmod +x entrypoint.sh
 
-ENTRYPOINT "/entrypoint.sh" $INPUT_GITHUB_PERSONAL_ACCESS_TOKEN github_personal_access_token $github_repo $reporting_endpoint $reporting_group
+ENTRYPOINT "/entrypoint.sh" $INPUT_GITHUB_PERSONAL_ACCESS_TOKEN $INPUT_GITHUB_REPO $INPUT_REPORTING_ENDPOINT $INPUT_REPORTING_GROUP
