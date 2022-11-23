@@ -1,6 +1,5 @@
 name: "GitHub Metrics Report"
 description: "Posts GitHub metrics to an Endpoint for tracking metrics over time"
-branding:
 
 inputs:
   github_personal_access_token:
