@@ -18,3 +18,5 @@ inputs:
 runs:
   using: "docker"
   image: "Dockerfile"
+  args:
+    - ${{ inputs.github_personal_access_token }}
