@@ -14,8 +14,6 @@ inputs:
   reporting_group:
     description: "Reporting group or team"
     required: true
-  
-outputs:
 
 runs:
   using: "docker"
