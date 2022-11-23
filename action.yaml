@@ -19,7 +19,4 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - ${{ inputs.github_personal_access_token }}
-    - ${{ inputs.github_repo }}
-    - ${{ inputs.reporting_endpoint }}
-    - ${{ inputs.reporting_group }}
+    - ${{ inputs.github_personal_access_token }} ${{ inputs.github_repo }} ${{ inputs.reporting_endpoint }} ${{ inputs.reporting_group }}
