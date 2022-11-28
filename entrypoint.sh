@@ -80,8 +80,6 @@ echo "Publishing public stats to endpoint"
 
 GITHUB_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO)
 
-echo $GITHUB_DATA
-
 REPO_ID=$(echo $GITHUB_DATA | jq '.id')
 REPO_STARS=$(echo $GITHUB_DATA | jq '.stargazers_count')
 REPO_WATCHERS=$(echo $GITHUB_DATA | jq '.watchers_count')
