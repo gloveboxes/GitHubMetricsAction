@@ -28,6 +28,9 @@ if [ -z "$REPORTING_GROUP" ]; then
     exit 1
 fi
 
+#########################################################################################
+# sh function to publish json to Azure Function App webhook
+#########################################################################################
 post_content() {
     JSON_DATA=$1
     ENDPOINT_URL=$2
@@ -42,19 +45,27 @@ post_content() {
     fi
 }
 
-get_github_data(){
+#########################################################################################
+# sh function to get json data from GitHub API
+#########################################################################################
+get_github_data() {
     GITHUB_URL=$1
 
-    echo $(curl \
-    --header "Accept: application/vnd.github+json" \
-    --header "Authorization: Bearer $PAT_REPO_REPORT" \
-    $GITHUB_URL)
+    echo $(
+        curl \
+        --header "Accept: application/vnd.github+json" \
+        --header "Authorization: Bearer $PAT_REPO_REPORT" \
+        $GITHUB_URL
+    )
 }
 
+#########################################################################################
+# sh function to validate json data from GitHub API
+#########################################################################################
 validate_variable() {
     VAR_NAME=$1
     VAR_VALUE=$2
-    
+
     if [ $VAR_VALUE == "null" ]; then
         echo "$VAR_NAME is not set"
         echo "Check that the PAT_REPO_REPORT and GITHUB_REPO variables are correct"
@@ -62,7 +73,9 @@ validate_variable() {
     fi
 }
 
+#########################################################################################
 # Publish public stats to endpoint
+#########################################################################################
 echo "Publishing public stats to endpoint"
 
 GITHUB_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO)
@@ -78,55 +91,47 @@ validate_variable "REPO_WATCHERS" $REPO_WATCHERS
 validate_variable "REPO_FORKS" $REPO_FORKS
 
 JSON=$(
-    echo {} |
-        jq \
-            --arg repo $GITHUB_REPO \
-            --argjson repo_id $REPO_ID \
-            --arg report_group $REPORTING_GROUP \
-            --argjson stars $REPO_STARS \
-            --argjson forks $REPO_FORKS \
-            '{repo: $repo, repo_id: $repo_id, group: $report_group, stars: $stars, forks: $forks}'
+    echo {} | jq \
+    --arg repo $GITHUB_REPO \
+    --argjson repo_id $REPO_ID \
+    --arg report_group $REPORTING_GROUP \
+    --argjson stars $REPO_STARS \
+    --argjson forks $REPO_FORKS \
+    '{repo: $repo, repo_id: $repo_id, group: $report_group, stars: $stars, forks: $forks}'
 )
 
 post_content "$JSON" "$REPORTING_ENDPOINT_URL/api/GitHubPublicStats"
 
+#########################################################################################
 # Publish clones stats to endpoint
+#########################################################################################
 echo "Publishing clones stats to endpoint"
-
-# CLONE_DATA=$(curl \
-#     --header "Accept: application/vnd.github+json" \
-#     --header "Authorization: Bearer $PAT_REPO_REPORT" \
-#     https://api.github.com/repos/$GITHUB_REPO/traffic/clones)
 
 CLONE_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO/traffic/clones)
 
 JSON=$(
-    echo $CLONE_DATA |
-        jq \
-            --arg repo $GITHUB_REPO \
-            --argjson repo_id $REPO_ID \
-            --arg report_group $REPORTING_GROUP \
-            '.clones[] += {repo: $repo} | .clones[] += {group: $report_group} | .clones[] += {repo_id: $repo_id} '
+    echo $CLONE_DATA | jq \
+    --arg repo $GITHUB_REPO \
+    --argjson repo_id $REPO_ID \
+    --arg report_group $REPORTING_GROUP \
+    '.clones[] += {repo: $repo} | .clones[] += {group: $report_group} | .clones[] += {repo_id: $repo_id} '
 )
 
 post_content "$JSON" "$REPORTING_ENDPOINT_URL/api/GitHubCloneCount"
 
+#########################################################################################
+# Publish views stats to endpoint
+#########################################################################################
 echo "Publishing views stats to endpoint"
-
-# VIEWS_DATA=$(curl \
-#     --header "Accept: application/vnd.github+json" \
-#     --header "Authorization: Bearer $PAT_REPO_REPORT" \
-#     https://api.github.com/repos/$GITHUB_REPO/traffic/views)
 
 VIEWS_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO/traffic/views)
 
 JSON=$(
-    echo $VIEWS_DATA |
-        jq \
-            --arg repo $GITHUB_REPO \
-            --argjson repo_id $REPO_ID \
-            --arg report_group $REPORTING_GROUP \
-            '.views[] += {repo: $repo} | .views[] += {group: $report_group} | .views[] += {repo_id: $repo_id}'
+    echo $VIEWS_DATA | jq \
+    --arg repo $GITHUB_REPO \
+    --argjson repo_id $REPO_ID \
+    --arg report_group $REPORTING_GROUP \
+    '.views[] += {repo: $repo} | .views[] += {group: $report_group} | .views[] += {repo_id: $repo_id}'
 )
 
 post_content "$JSON" "$REPORTING_ENDPOINT_URL/api/GitHubViewCount"
