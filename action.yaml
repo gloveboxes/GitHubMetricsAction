@@ -8,11 +8,14 @@ inputs:
   github_repo:
     description: "GitHub owner/repo name"
     required: true
-  reporting_endpoint:
-    description: "Azure Function App Reporting Endpoint"
+  reporting_endpoint_url:
+    description: "Azure Function App reporting endpoint url"
+    required: true
+  reporting_endpoint_key:
+    description: "Azure Function App reporting endpoint key"
     required: true
   reporting_group:
-    description: "Reporting group or team"
+    description: "Reporting group or team name"
     required: true
 
 runs:
@@ -21,5 +24,6 @@ runs:
   args:
     - ${{ inputs.github_personal_access_token }} 
     - ${{ inputs.github_repo }} 
-    - ${{ inputs.reporting_endpoint }} 
+    - ${{ inputs.reporting_endpoint_url }} 
+    - ${{ inputs.reporting_endpoint_key }} 
     - ${{ inputs.reporting_group }}

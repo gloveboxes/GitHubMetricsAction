@@ -4,8 +4,9 @@ echo "Starting GitHub reporting..."
 
 PAT_REPO_REPORT=$1
 GITHUB_REPO=$2
-ENDPOINT_REPO_REPORT=$3
-REPORT_GROUP=$4
+ENDPOINT_REPORT_URL=$3
+ENDPOINT_REPORT_KEY=$4
+REPORT_GROUP=$5
 
 if [ -z "$PAT_REPO_REPORT" ]; then
     echo "PAT_REPO_REPORT is not set"
@@ -17,8 +18,8 @@ if [ -z "$GITHUB_REPO" ]; then
     exit 1
 fi
 
-if [ -z "$ENDPOINT_REPO_REPORT" ]; then
-    echo "ENDPOINT_REPO_REPORT is not set"
+if [ -z "$ENDPOINT_REPORT_URL" ]; then
+    echo "ENDPOINT_REPORT_URL is not set"
     exit 1
 fi
 
@@ -29,14 +30,14 @@ fi
 
 post_content() {
     JSON_DATA=$1
-    ENDPOINT=$2
+    ENDPOINT_URL=$2
 
-    result=$(echo $JSON_DATA | curl --silent --show-error --write-out '%{http_code}' -H "Content-Type: application/json" -X POST --data-binary @- $ENDPOINT)
+    result=$(echo $JSON_DATA | curl --silent --show-error --write-out '%{http_code}' -H "Content-Type: application/json" -H "x-functions-key: $ENDPOINT_REPORT_KEY" -X POST --data-binary @- $ENDPOINT_URL)
 
     if [ "$result" = 200 ]; then
-        echo "Curl publish to $ENDPOINT succeeded."
+        echo "Curl publish to $ENDPOINT_URL succeeded."
     else
-        echo "Curl publish to $ENDPOINT failed: $result"
+        echo "Curl publish to $ENDPOINT_URL failed: $result"
         exit 1
     fi
 }
@@ -81,7 +82,7 @@ JSON=$(
             '{repo: $repo, repo_id: $repo_id, group: $report_group, stars: $stars, forks: $forks}'
 )
 
-post_content "$JSON" "$ENDPOINT_REPO_REPORT/api/GitHubPublicStats"
+post_content "$JSON" "$ENDPOINT_REPORT_URL/api/GitHubPublicStats"
 
 # Publish clones stats to endpoint
 echo "Publishing clones stats to endpoint"
@@ -100,7 +101,7 @@ JSON=$(
             '.clones[] += {repo: $repo} | .clones[] += {group: $report_group} | .clones[] += {repo_id: $repo_id} '
 )
 
-post_content "$JSON" "$ENDPOINT_REPO_REPORT/api/GitHubCloneCount"
+post_content "$JSON" "$ENDPOINT_REPORT_URL/api/GitHubCloneCount"
 
 echo "Publishing views stats to endpoint"
 
@@ -118,6 +119,6 @@ JSON=$(
             '.views[] += {repo: $repo} | .views[] += {group: $report_group} | .views[] += {repo_id: $repo_id}'
 )
 
-post_content "$JSON" "$ENDPOINT_REPO_REPORT/api/GitHubViewCount"
+post_content "$JSON" "$ENDPOINT_REPORT_URL/api/GitHubViewCount"
 
 echo "Finished GitHub reporting..."
