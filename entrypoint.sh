@@ -65,14 +65,7 @@ validate_variable() {
 # Publish public stats to endpoint
 echo "Publishing public stats to endpoint"
 
-# META_DATA=$(curl \
-#     --header "Accept: application/vnd.github+json" \
-#     --header "Authorization: Bearer $PAT_REPO_REPORT" \
-#     https://api.github.com/repos/$GITHUB_REPO)
-
 GITHUB_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO)
-
-echo $GITHUB_DATA
 
 REPO_ID=$(echo $GITHUB_DATA | jq '.id')
 REPO_STARS=$(echo $GITHUB_DATA | jq '.stargazers_count')
@@ -100,10 +93,12 @@ post_content "$JSON" "$REPORTING_ENDPOINT_URL/api/GitHubPublicStats"
 # Publish clones stats to endpoint
 echo "Publishing clones stats to endpoint"
 
-CLONE_DATA=$(curl \
-    --header "Accept: application/vnd.github+json" \
-    --header "Authorization: Bearer $PAT_REPO_REPORT" \
-    https://api.github.com/repos/$GITHUB_REPO/traffic/clones)
+# CLONE_DATA=$(curl \
+#     --header "Accept: application/vnd.github+json" \
+#     --header "Authorization: Bearer $PAT_REPO_REPORT" \
+#     https://api.github.com/repos/$GITHUB_REPO/traffic/clones)
+
+CLONE_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO/traffic/clones)
 
 JSON=$(
     echo $CLONE_DATA |
@@ -118,10 +113,12 @@ post_content "$JSON" "$REPORTING_ENDPOINT_URL/api/GitHubCloneCount"
 
 echo "Publishing views stats to endpoint"
 
-VIEWS_DATA=$(curl \
-    --header "Accept: application/vnd.github+json" \
-    --header "Authorization: Bearer $PAT_REPO_REPORT" \
-    https://api.github.com/repos/$GITHUB_REPO/traffic/views)
+# VIEWS_DATA=$(curl \
+#     --header "Accept: application/vnd.github+json" \
+#     --header "Authorization: Bearer $PAT_REPO_REPORT" \
+#     https://api.github.com/repos/$GITHUB_REPO/traffic/views)
+
+VIEWS_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO/traffic/views)
 
 JSON=$(
     echo $VIEWS_DATA |
