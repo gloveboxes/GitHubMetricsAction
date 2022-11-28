@@ -48,7 +48,7 @@ get_github_data(){
     GITHUB_DATA=$(curl \
     --header "Accept: application/vnd.github+json" \
     --header "Authorization: Bearer $PAT_REPO_REPORT" \
-    GITHUB_URL=$1)
+    $GITHUB_URL)
 }
 
 validate_variable() {
