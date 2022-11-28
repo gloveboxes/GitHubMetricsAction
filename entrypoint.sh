@@ -50,13 +50,13 @@ post_content() {
 #########################################################################################
 get_github_data() {
     GITHUB_URL=$1
-    echo "before curl"
-        curl \
-        --header "Accept: application/vnd.github+json" \
-        --header "Authorization: Bearer $PAT_REPO_REPORT" \
-        $GITHUB_URL
+#     echo "before curl"
+#         curl \
+#         --header "Accept: application/vnd.github+json" \
+#         --header "Authorization: Bearer $PAT_REPO_REPORT" \
+#         $GITHUB_URL
         
-        echo "after curl"
+#         echo "after curl"
 
     echo $(
         curl \
