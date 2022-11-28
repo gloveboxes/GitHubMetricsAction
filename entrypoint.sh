@@ -57,6 +57,11 @@ get_github_data() {
         --header "Authorization: Bearer $PAT_REPO_REPORT" \
         $GITHUB_URL
     )
+    
+    curl \
+        --header "Accept: application/vnd.github+json" \
+        --header "Authorization: Bearer $PAT_REPO_REPORT" \
+        $GITHUB_URL
 }
 
 #########################################################################################
