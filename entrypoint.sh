@@ -45,7 +45,7 @@ post_content() {
 get_github_data(){
     GITHUB_URL=$1
 
-    echo $(curl \
+    GITHUB_DATA=$(curl \
     --header "Accept: application/vnd.github+json" \
     --header "Authorization: Bearer $PAT_REPO_REPORT" \
     GITHUB_URL=$1)
@@ -70,12 +70,14 @@ echo "Publishing public stats to endpoint"
 #     --header "Authorization: Bearer $PAT_REPO_REPORT" \
 #     https://api.github.com/repos/$GITHUB_REPO)
 
-META_DATA=$(get_github_data https://api.github.com/repos/$GITHUB_REPO)
+get_github_data https://api.github.com/repos/$GITHUB_REPO
 
-REPO_ID=$(echo $META_DATA | jq '.id')
-REPO_STARS=$(echo $META_DATA | jq '.stargazers_count')
-REPO_WATCHERS=$(echo $META_DATA | jq '.watchers_count')
-REPO_FORKS=$(echo $META_DATA | jq '.forks_count')
+echo GITHUB_DATA
+
+REPO_ID=$(echo $GITHUB_DATA | jq '.id')
+REPO_STARS=$(echo $GITHUB_DATA | jq '.stargazers_count')
+REPO_WATCHERS=$(echo $GITHUB_DATA | jq '.watchers_count')
+REPO_FORKS=$(echo $GITHUB_DATA | jq '.forks_count')
 
 validate_variable "REPO_ID" $REPO_ID
 validate_variable "REPO_STARS" $REPO_STARS
