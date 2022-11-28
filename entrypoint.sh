@@ -2,14 +2,14 @@
 
 echo "Starting GitHub reporting..."
 
-PAT_REPO_REPORT=$1
+REPORTING_PAT=$1
 GITHUB_REPO=$2
 REPORTING_ENDPOINT_URL=$3
 REPORTING_ENDPOINT_KEY=$4
 REPORTING_GROUP=$5
 
-if [ -z "$PAT_REPO_REPORT" ]; then
-    echo "PAT_REPO_REPORT is not set"
+if [ -z "$REPORTING_PAT" ]; then
+    echo "REPORTING_PAT is not set"
     exit 1
 fi
 
@@ -54,7 +54,7 @@ get_github_data() {
     echo $(
         curl \
         --header "Accept: application/vnd.github+json" \
-        --header "Authorization: Bearer $PAT_REPO_REPORT" \
+        --header "Authorization: Bearer $REPORTING_PAT" \
         $GITHUB_URL
     )
 }
@@ -68,7 +68,7 @@ validate_variable() {
 
     if [ $VAR_VALUE == "null" ]; then
         echo "$VAR_NAME is not set"
-        echo "Check that the PAT_REPO_REPORT and GITHUB_REPO variables are correct"
+        echo "Check that the REPORTING_PAT and GITHUB_REPO variables are correct"
         exit 1
     fi
 }
