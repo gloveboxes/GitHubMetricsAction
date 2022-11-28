@@ -8,9 +8,6 @@ REPORTING_ENDPOINT_URL=$3
 REPORTING_ENDPOINT_KEY=$4
 REPORTING_GROUP=$5
 
-GITHUB_DATA = ""
-JSON = ""
-
 if [ -z "$PAT_REPO_REPORT" ]; then
     echo "PAT_REPO_REPORT is not set"
     exit 1
